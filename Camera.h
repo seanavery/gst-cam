@@ -9,4 +9,5 @@ class Camera {
 		void init(int argc, char *argv[]);
 		void build();
 		void start();
+		void loop();
 };
