@@ -5,6 +5,10 @@
 
 using namespace std;
 
+void Camera::init(int argc, char *argv[]) {
+	gst_init(&argc, &argv);
+};
+
 void Camera::buildPipeline() {
 	ostringstream ss;
 	ss << "nvarguscamerasrc wbmode=1 ! ";
@@ -13,4 +17,4 @@ void Camera::buildPipeline() {
 	ss << "appsink";
 	// string pipelineStr = ss.str();
 	this->pipeline = gst_parse_launch(ss.str().c_str(), NULL);
-}
+};

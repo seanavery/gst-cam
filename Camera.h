@@ -5,5 +5,6 @@
 class Camera {
 	public:
 		GstElement* pipeline;
+		void init(int argc, char *argv[]);
 		void buildPipeline();
 };
