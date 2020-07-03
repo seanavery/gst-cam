@@ -3,5 +3,5 @@
 int main(int argc, char *argv[]) {
 	Camera camera;
 	camera.init(argc, argv);
-	camera.buildPipeline();
+	camera.build();
 }

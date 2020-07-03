@@ -9,12 +9,18 @@ void Camera::init(int argc, char *argv[]) {
 	gst_init(&argc, &argv);
 };
 
-void Camera::buildPipeline() {
+void Camera::build() {
 	ostringstream ss;
 	ss << "nvarguscamerasrc wbmode=1 ! ";
 	ss << "nvvidconv flip-method=2 ! ";
 	ss << "videoconvert ! video/x-raw, format=(string)BGR ! ";
 	ss << "appsink";
-	// string pipelineStr = ss.str();
 	this->pipeline = gst_parse_launch(ss.str().c_str(), NULL);
+};
+
+void Camera::start() {
+	// start playing
+	gst_element_set_state(this->pipeline, GST_STATE_PLAYING);
+	
+	this->bus = gst_element_get_bus(pipeline);
 };
