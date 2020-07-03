@@ -1,3 +1,4 @@
+#include <gst/gst.h>
 #include "Camera.h"
 #include <iostream>
 #include <sstream>
@@ -10,6 +11,6 @@ void Camera::buildPipeline() {
 	ss << "nvvidconv flip-method=2 ! ";
 	ss << "videoconvert ! video/x-raw, format=(string)BGR ! ";
 	ss << "appsink";
-	
-	this->pipeline = ss.str();
+	// string pipelineStr = ss.str();
+	this->pipeline = gst_parse_launch(ss.str().c_str(), NULL);
 }
