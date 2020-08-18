@@ -51,13 +51,44 @@ void Camera::start()
 		return;
 	}
 	GstAppSink* appsink = GST_APP_SINK(appsinkElement);
-	// if (!appsink)
-	// {
-	// 	cout << "could not create appsink" << endl;
-	// 	return;
-	// }
+	if (!appsink)
+	{
+		cout << "could not create appsink" << endl;
+		return;
+	}
+	GstAppSinkCallbacks cb;
+	memset(&cb, 0, sizeof(GstAppSinkCallbacks));
+	cb.eos = onEOS;
+	cb.new_preroll = onPreroll;
+	cb.new_sample = onBuffer;
+	gst_app_sink_set_callbacks(appsink, &cb, (void*)this, NULL);
 	// GstAppSink* appsinkElement = gst_bin_get_by_name(GST_BIN(
 	// gst_element_set_state(this->pipeline, GST_STATE_PLAYING);
 	// this->bus = gst_element_get_bus(this->pipeline);
 	// this->loop();
+};
+
+void Camera::onEOS(_GstAppSink* sink, void* user_data)
+{
+	cout << "hit end of stream" << endl;
+};
+
+GstFlowReturn Camera::onBuffer(_GstAppSink* sink, void* user_data)
+{
+	if (!user_data)
+	{
+		return GST_FLOW_OK;
+	}
+
+	// gstCamera* dec = (gstCamera*)user_data;
+
+	//  dec->checkBuffer();
+	// dec->checkMsgBus();
+	return GST_FLOW_OK;
+};
+
+GstFlowReturn Camera::onPreroll(_GstAppSink* sink, void* user_data)
+{
+	cout << "camera preroll" << endl;
+	return GST_FLOW_OK;
 };
