@@ -9,12 +9,14 @@ class Camera {
 		GstBus* bus;
 		GstAppSink* sink;
 		void init(int argc, char *argv[]);
-		void build();
-		void start();
-		void loop();
+		// void build();
+		// void start();
+		bool open();
 		bool capture();
 	private:
 		static void onEOS(_GstAppSink* sink, void* user_data);
 		static GstFlowReturn onPreroll(_GstAppSink* sink, void* user_data);
 		static GstFlowReturn onBuffer(_GstAppSink* sink, void* user_data);
+		void checkBuffer();
+		void checkMsgBus();
 };

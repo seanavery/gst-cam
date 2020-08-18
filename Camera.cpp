@@ -8,12 +8,11 @@ using namespace std;
 
 void Camera::init(int argc, char *argv[]) 
 {
+	// init
 	cout << "gstreamer camera" << endl;
 	gst_init(&argc, &argv);
-};
-
-void Camera::build() 
-{
+	
+	// build
 	ostringstream ss;
 	ss << "nvarguscamerasrc wbmode=1 ! ";
 	ss << "nvvidconv flip-method=2 ! ";
@@ -28,10 +27,8 @@ void Camera::build()
 		return;
 	}
 	cout << ss.str() << endl;
-};
-
-void Camera::start() 
-{
+	
+	// start
 	GstPipeline* pipeline = GST_PIPELINE(this->launch);
 	if (!pipeline)
 	{
@@ -51,6 +48,7 @@ void Camera::start()
 		return;
 	}
 	GstAppSink* appsink = GST_APP_SINK(appsinkElement);
+	this->sink = appsink;
 	if (!appsink)
 	{
 		cout << "could not create appsink" << endl;
@@ -80,10 +78,10 @@ GstFlowReturn Camera::onBuffer(_GstAppSink* sink, void* user_data)
 		return GST_FLOW_OK;
 	}
 
-	// gstCamera* dec = (gstCamera*)user_data;
+	Camera* dec = (Camera*)user_data;
 
-	//  dec->checkBuffer();
-	// dec->checkMsgBus();
+	dec->checkBuffer();
+	dec->checkMsgBus();
 	return GST_FLOW_OK;
 };
 
@@ -92,3 +90,55 @@ GstFlowReturn Camera::onPreroll(_GstAppSink* sink, void* user_data)
 	cout << "camera preroll" << endl;
 	return GST_FLOW_OK;
 };
+
+void Camera::checkBuffer() 
+{
+	if (!this->sink)
+	{
+		cout << "sink is not defined" << endl;
+		return;
+	}
+	GstSample* gstSample = gst_app_sink_pull_sample(this->sink);
+	if (!gstSample)
+	{
+		cout << "app sink pull" << endl;
+		return;
+	}
+};
+
+void Camera::checkMsgBus() 
+{
+	cout << "check msg bus" << endl;
+}
+
+bool Camera::open() 
+{
+	if (!this->launch)
+	{
+		cout << "must init camera before openeing" << endl;
+		return false;
+	}
+	// change state of pipeline
+	const GstStateChangeReturn result = gst_element_set_state(this->launch, GST_STATE_PLAYING);
+
+	cout << result << endl;
+	cout << GST_STATE_CHANGE_SUCCESS << endl;
+	cout << GST_STATE_CHANGE_ASYNC << endl;
+
+	
+	if (result == GST_STATE_CHANGE_ASYNC)
+	{
+		GstMessage* asyncMsg = gst_bus_timed_pop_filtered(this->bus, 5 * GST_SECOND, (GstMessageType)(GST_MESSAGE_ASYNC_DONE|GST_MESSAGE_ERROR));
+		if (asyncMsg != NULL)
+		{
+			// gst_message_print(this->bus, asyncMsg, this);
+			// gst_message_unref(asyncMsg);
+			cout << asyncMsg << endl;
+		}
+	}
+	else if (result != GST_STATE_CHANGE_SUCCESS)
+	{
+		cout << "could not change state to playing" << endl;
+		return false;
+	}
+}
