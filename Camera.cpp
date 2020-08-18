@@ -33,10 +33,31 @@ void Camera::build()
 void Camera::start() 
 {
 	GstPipeline* pipeline = GST_PIPELINE(this->launch);
-	// this->bus = gst_element_get_bus(this->launch);
+	if (!pipeline)
+	{
+		cout << "could not create GST pipeline" << endl;
+		return;
+	}
+	this->bus = gst_pipeline_get_bus(pipeline);
+	if (!this->bus)
+	{
+		cout << "could not create bus element" << endl;
+		return;
+	}
+	GstElement* appsinkElement = gst_bin_get_by_name(GST_BIN(pipeline), "sink");
+	if (!appsinkElement)
+	{
+		cout << "could not create appsink element" << endl;
+		return;
+	}
+	GstAppSink* appsink = GST_APP_SINK(appsinkElement);
+	// if (!appsink)
+	// {
+	// 	cout << "could not create appsink" << endl;
+	// 	return;
+	// }
 	// GstAppSink* appsinkElement = gst_bin_get_by_name(GST_BIN(
 	// gst_element_set_state(this->pipeline, GST_STATE_PLAYING);
 	// this->bus = gst_element_get_bus(this->pipeline);
 	// this->loop();
-	
 };
