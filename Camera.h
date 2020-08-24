@@ -17,6 +17,6 @@ class Camera {
 		static void onEOS(_GstAppSink* sink, void* user_data);
 		static GstFlowReturn onPreroll(_GstAppSink* sink, void* user_data);
 		static GstFlowReturn onBuffer(_GstAppSink* sink, void* user_data);
-		void checkBuffer();
+		void checkBuffer(_GstAppSink* msink);
 		void checkMsgBus();
 };

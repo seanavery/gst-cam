@@ -17,7 +17,7 @@ void Camera::init(int argc, char *argv[])
 	ss << "nvarguscamerasrc wbmode=1 ! ";
 	ss << "nvvidconv flip-method=2 ! ";
 	ss << "videoconvert ! video/x-raw, format=(string)BGR ! ";
-	ss << "appsink name=sink";
+	ss << "appsink name=mysink";
 	GError* err = NULL;
 	this->launch = gst_parse_launch(ss.str().c_str(), &err);
 	if (err != NULL) 
@@ -41,25 +41,26 @@ void Camera::init(int argc, char *argv[])
 		cout << "could not create bus element" << endl;
 		return;
 	}
-	GstElement* appsinkElement = gst_bin_get_by_name(GST_BIN(pipeline), "sink");
+	GstElement* appsinkElement = gst_bin_get_by_name(GST_BIN(pipeline), "mysink");
 	if (!appsinkElement)
 	{
 		cout << "could not create appsink element" << endl;
 		return;
 	}
-	GstAppSink* appsink = GST_APP_SINK(appsinkElement);
-	this->sink = appsink;
-	if (!appsink)
+	this->sink = GST_APP_SINK(appsinkElement);
+	cout << typeid(this->sink).name() << endl;
+	if (!this->sink)
 	{
 		cout << "could not create appsink" << endl;
 		return;
 	}
+	// this->sink = appsink;
 	GstAppSinkCallbacks cb;
 	memset(&cb, 0, sizeof(GstAppSinkCallbacks));
 	cb.eos = onEOS;
 	cb.new_preroll = onPreroll;
 	cb.new_sample = onBuffer;
-	gst_app_sink_set_callbacks(appsink, &cb, (void*)this, NULL);
+	gst_app_sink_set_callbacks(this->sink, &cb, (void*)this, NULL);
 	// GstAppSink* appsinkElement = gst_bin_get_by_name(GST_BIN(
 	// gst_element_set_state(this->pipeline, GST_STATE_PLAYING);
 	// this->bus = gst_element_get_bus(this->pipeline);
@@ -78,9 +79,11 @@ GstFlowReturn Camera::onBuffer(_GstAppSink* sink, void* user_data)
 		return GST_FLOW_OK;
 	}
 
+	cout << user_data << endl;
+
 	Camera* dec = (Camera*)user_data;
 
-	dec->checkBuffer();
+	dec->checkBuffer(sink);
 	dec->checkMsgBus();
 	return GST_FLOW_OK;
 };
@@ -91,17 +94,20 @@ GstFlowReturn Camera::onPreroll(_GstAppSink* sink, void* user_data)
 	return GST_FLOW_OK;
 };
 
-void Camera::checkBuffer() 
+void Camera::checkBuffer(_GstAppSink* msink) 
 {
+	cout << "inside checkBuffer" << endl;
 	if (!this->sink)
 	{
 		cout << "sink is not defined" << endl;
 		return;
 	}
-	GstSample* gstSample = gst_app_sink_pull_sample(this->sink);
+	cout << typeid(this->sink).name() << endl;
+	cout << GST_IS_APP_SINK(this->sink) << endl;
+	GstSample* gstSample = gst_app_sink_pull_sample(msink);
 	if (!gstSample)
 	{
-		cout << "app sink pull" << endl;
+		cout << "app sink pull error" << endl;
 		return;
 	}
 };
