@@ -110,6 +110,18 @@ void Camera::checkBuffer(_GstAppSink* msink)
 		cout << "app sink pull error" << endl;
 		return;
 	}
+	GstBuffer* gstBuff = gst_sample_get_buffer(gstSample);
+	if (!gstBuff)
+	{
+		cout << "could not convert sink sample to buffer" << endl;
+		return;
+	}
+	GstMapInfo map;
+	if (!gst_buffer_map(gstBuff, &map, GST_MAP_READ))
+	{
+		cout << "gst_buffer_map() failed" << endl;
+		return;
+	}
 };
 
 void Camera::checkMsgBus() 
