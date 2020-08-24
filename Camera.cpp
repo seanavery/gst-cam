@@ -11,12 +11,13 @@ void Camera::init(int argc, char *argv[])
 	// init
 	cout << "gstreamer camera" << endl;
 	gst_init(&argc, &argv);
+	this->frameCount = 0;
 	
 	// build
 	ostringstream ss;
 	ss << "nvarguscamerasrc wbmode=1 sensor_id=0 ! ";
 	ss << "nvvidconv flip-method=2 ! ";
-	ss << "videoconvert ! video/x-raw, format=(string)BGR ! ";
+	// ss << "videoconvert ! video/x-raw, format=(string)BGR ! ";
 	ss << "appsink name=mysink";
 	GError* err = NULL;
 	this->launch = gst_parse_launch(ss.str().c_str(), &err);
@@ -47,9 +48,9 @@ void Camera::init(int argc, char *argv[])
 		cout << "could not create appsink element" << endl;
 		return;
 	}
-	this->sink = GST_APP_SINK(appsinkElement);
-	cout << typeid(this->sink).name() << endl;
-	if (!this->sink)
+	sink = GST_APP_SINK(appsinkElement);
+	cout << typeid(sink).name() << endl;
+	if (!sink)
 	{
 		cout << "could not create appsink" << endl;
 		return;
@@ -59,8 +60,8 @@ void Camera::init(int argc, char *argv[])
 	memset(&cb, 0, sizeof(GstAppSinkCallbacks));
 	cb.eos = onEOS;
 	cb.new_preroll = onPreroll;
-	cb.new_sample = onBuffer;
-	gst_app_sink_set_callbacks(this->sink, &cb, (void*)this, NULL);
+	cb.new_sample = this->onBuffer;
+	gst_app_sink_set_callbacks(sink, &cb, (void*)this, NULL);
 	// GstAppSink* appsinkElement = gst_bin_get_by_name(GST_BIN(
 	// gst_element_set_state(this->pipeline, GST_STATE_PLAYING);
 	// this->bus = gst_element_get_bus(this->pipeline);
@@ -98,14 +99,16 @@ GstFlowReturn Camera::onPreroll(_GstAppSink* sink, void* user_data)
 void Camera::checkBuffer(_GstAppSink* msink) 
 {
 	cout << "inside checkBuffer" << endl;
-	if (!this->sink)
+	this->frameCount = this->frameCount + 1;
+	cout << "frame count " << frameCount << endl;
+	if (!sink)
 	{
 		cout << "sink is not defined" << endl;
 		return;
 	}
-	cout << typeid(this->sink).name() << endl;
-	cout << GST_IS_APP_SINK(this->sink) << endl;
-	GstSample* gstSample = gst_app_sink_pull_sample(msink);
+	cout << typeid(sink).name() << endl;
+	cout << GST_IS_APP_SINK(sink) << endl;
+	GstSample* gstSample = gst_app_sink_pull_sample(sink);
 	if (!gstSample)
 	{
 		cout << "app sink pull error" << endl;
@@ -144,7 +147,9 @@ void Camera::checkBuffer(_GstAppSink* msink)
 	int height = 0;
 	gst_structure_get_int(gstCapsStruct, "height", &height);
 	cout << "height: " << height << endl;
+	gst_sample_unref(gstSample);
 	gst_buffer_unmap(gstBuff, &map);
+	return;
 };
 
 void Camera::checkMsgBus() 
@@ -198,7 +203,11 @@ bool Camera::open()
 	}
 	cout << "first check msg bus" << endl;
 	checkMsgBus();
-	g_usleep(100*1000);
+	g_usleep(100*10000);
+	cout << "second check msg bus" << endl;
+	checkMsgBus();
+	cout << "after everything" << endl;
+	g_usleep(100*10000);
 	cout << "second check msg bus" << endl;
 	checkMsgBus();
 	cout << "after everything" << endl;
