@@ -14,7 +14,7 @@ void Camera::init(int argc, char *argv[])
 	
 	// build
 	ostringstream ss;
-	ss << "nvarguscamerasrc wbmode=1 ! ";
+	ss << "nvarguscamerasrc wbmode=1 sensor_id=0 ! ";
 	ss << "nvvidconv flip-method=2 ! ";
 	ss << "videoconvert ! video/x-raw, format=(string)BGR ! ";
 	ss << "appsink name=mysink";
@@ -74,6 +74,7 @@ void Camera::onEOS(_GstAppSink* sink, void* user_data)
 
 GstFlowReturn Camera::onBuffer(_GstAppSink* sink, void* user_data)
 {
+	cout << "hit onBuffer" << endl;
 	if (!user_data)
 	{
 		return GST_FLOW_OK;
@@ -125,6 +126,25 @@ void Camera::checkBuffer(_GstAppSink* msink)
 	const void* data = map.data;
 	const gsize maxsize = map.maxsize;
 	cout << "maxsize" << maxsize << endl;
+	GstCaps* gstCaps = gst_sample_get_caps(gstSample);
+	if (!gstCaps)
+	{
+		cout << "could not retrieve caps" << endl;
+		return;
+	}
+	GstStructure* gstCapsStruct = gst_caps_get_structure(gstCaps, 0);
+	if (!gstCapsStruct)
+	{
+		cout << "could not create gstCapsStruct" << endl;
+		return;
+	}
+	int width = 0;
+	gst_structure_get_int(gstCapsStruct, "width", &width);
+	cout << "width: " << width << endl;
+	int height = 0;
+	gst_structure_get_int(gstCapsStruct, "height", &height);
+	cout << "height: " << height << endl;
+	gst_buffer_unmap(gstBuff, &map);
 };
 
 void Camera::checkMsgBus() 
@@ -132,12 +152,15 @@ void Camera::checkMsgBus()
 	cout << "check msg bus" << endl;
 	while (true) 
 	{
+		cout << "before" << endl;
 		GstMessage* msg = gst_bus_pop(this->bus);
-		cout << "0" << endl;
+		cout << "after" << endl;
 		if (!msg)
 		{
+			cout << "no message ..." << endl;
 			break;
 		}
+		gst_message_unref(msg);
 	}
 }
 
@@ -157,11 +180,14 @@ bool Camera::open()
 	
 	if (result == GST_STATE_CHANGE_ASYNC)
 	{
+		cout << "here 0" << endl;
 		GstMessage* asyncMsg = gst_bus_timed_pop_filtered(this->bus, 5 * GST_SECOND, (GstMessageType)(GST_MESSAGE_ASYNC_DONE|GST_MESSAGE_ERROR));
+		cout << "here 1" << endl;
 		if (asyncMsg != NULL)
 		{
 			// gst_message_print(this->bus, asyncMsg, this);
 			// gst_message_unref(asyncMsg);
+			cout << "nooooo goood async msg" << endl;
 			cout << asyncMsg << endl;
 		}
 	}
@@ -170,4 +196,10 @@ bool Camera::open()
 		cout << "could not change state to playing" << endl;
 		return false;
 	}
+	cout << "first check msg bus" << endl;
+	checkMsgBus();
+	g_usleep(100*1000);
+	cout << "second check msg bus" << endl;
+	checkMsgBus();
+	cout << "after everything" << endl;
 }
