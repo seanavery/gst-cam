@@ -122,11 +122,23 @@ void Camera::checkBuffer(_GstAppSink* msink)
 		cout << "gst_buffer_map() failed" << endl;
 		return;
 	}
+	const void* data = map.data;
+	const gsize maxsize = map.maxsize;
+	cout << "maxsize" << maxsize << endl;
 };
 
 void Camera::checkMsgBus() 
 {
 	cout << "check msg bus" << endl;
+	while (true) 
+	{
+		GstMessage* msg = gst_bus_pop(this->bus);
+		cout << "0" << endl;
+		if (!msg)
+		{
+			break;
+		}
+	}
 }
 
 bool Camera::open() 
@@ -142,7 +154,6 @@ bool Camera::open()
 	cout << result << endl;
 	cout << GST_STATE_CHANGE_SUCCESS << endl;
 	cout << GST_STATE_CHANGE_ASYNC << endl;
-
 	
 	if (result == GST_STATE_CHANGE_ASYNC)
 	{
