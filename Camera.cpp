@@ -20,6 +20,7 @@ void Camera::init(int argc, char *argv[])
 	// ss << "videoconvert ! video/x-raw, format=(string)BGR ! ";
 	ss << "appsink name=mysink";
 	GError* err = NULL;
+	cout << ss.str() << endl;
 	this->launch = gst_parse_launch(ss.str().c_str(), &err);
 	if (err != NULL) 
 	{	
@@ -49,7 +50,6 @@ void Camera::init(int argc, char *argv[])
 		return;
 	}
 	sink = GST_APP_SINK(appsinkElement);
-	cout << typeid(sink).name() << endl;
 	if (!sink)
 	{
 		cout << "could not create appsink" << endl;
@@ -165,6 +165,8 @@ void Camera::checkMsgBus()
 			cout << "no message ..." << endl;
 			break;
 		}
+
+		cout << "got message!" << msg << endl;
 		gst_message_unref(msg);
 	}
 }
@@ -186,15 +188,17 @@ bool Camera::open()
 	if (result == GST_STATE_CHANGE_ASYNC)
 	{
 		cout << "here 0" << endl;
+#if 0
 		GstMessage* asyncMsg = gst_bus_timed_pop_filtered(this->bus, 5 * GST_SECOND, (GstMessageType)(GST_MESSAGE_ASYNC_DONE|GST_MESSAGE_ERROR));
 		cout << "here 1" << endl;
 		if (asyncMsg != NULL)
 		{
-			// gst_message_print(this->bus, asyncMsg, this);
-			// gst_message_unref(asyncMsg);
-			cout << "nooooo goood async msg" << endl;
-			cout << asyncMsg << endl;
+		// 	// gst_message_print(this->bus, asyncMsg, this);
+			gst_message_unref(asyncMsg);
+		// 	cout << "nooooo goood async msg" << endl;
+		// 	cout << asyncMsg << endl;
 		}
+#endif
 	}
 	else if (result != GST_STATE_CHANGE_SUCCESS)
 	{
@@ -203,12 +207,17 @@ bool Camera::open()
 	}
 	cout << "first check msg bus" << endl;
 	checkMsgBus();
-	g_usleep(100*10000);
+	g_usleep(100*1000);
 	cout << "second check msg bus" << endl;
 	checkMsgBus();
-	cout << "after everything" << endl;
-	g_usleep(100*10000);
-	cout << "second check msg bus" << endl;
-	checkMsgBus();
-	cout << "after everything" << endl;
+	// cout << "after everything" << endl;
+	// g_usleep(100*10000);
+	// cout << "second check msg bus" << endl;
+	// checkMsgBus();
+	// cout << "after everything" << endl;
+	cout << "its the end now" << endl;
+}
+
+bool Camera::capture() {
+	return true;
 }
