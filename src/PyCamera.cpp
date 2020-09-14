@@ -8,5 +8,5 @@ PYBIND11_MODULE(pycamera, m)
 	py::class_<Camera>(m, "Camera")
 		.def("init", &Camera::init)
 		.def("open", &Camera::open)
-		.def("capture", &Camera::capture)
+		.def("capture", &Camera::capture);
 }

@@ -6,11 +6,11 @@
 
 using namespace std;
 
-void Camera::init(int argc, char *argv[]) 
+void Camera::init() 
 {
 	// init
 	cout << "gstreamer camera" << endl;
-	gst_init(&argc, &argv);
+	// gst_init(&argc, &argv);
 	this->frameCount = 0;
 	
 	// build
@@ -210,11 +210,6 @@ bool Camera::open()
 	g_usleep(100*1000);
 	cout << "second check msg bus" << endl;
 	checkMsgBus();
-	// cout << "after everything" << endl;
-	// g_usleep(100*10000);
-	// cout << "second check msg bus" << endl;
-	// checkMsgBus();
-	// cout << "after everything" << endl;
 	cout << "its the end now" << endl;
 }
 

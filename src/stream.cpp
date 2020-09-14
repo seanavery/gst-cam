@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[]) {
 	Camera camera;
-	camera.init(argc, argv);
+	camera.init();
 	// camera.build();
 	// camera.start();
 	camera.open();

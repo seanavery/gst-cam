@@ -9,7 +9,7 @@ class Camera {
 		GstBus* bus;
 		GstAppSink* sink;
 		int frameCount;
-		void init(int argc, char *argv[]);
+		void init();
 		bool open();
 		bool capture();
 	private:
