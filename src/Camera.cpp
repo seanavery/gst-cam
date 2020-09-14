@@ -12,6 +12,11 @@ void Camera::init()
 	cout << "gstreamer camera" << endl;
 	// gst_init(&argc, &argv);
 	this->frameCount = 0;
+
+	// create dummy inputs
+	int *argc;
+	char **argv;
+	gst_init(argc, &argv);
 	
 	// build
 	ostringstream ss;
