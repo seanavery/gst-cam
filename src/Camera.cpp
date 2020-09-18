@@ -18,7 +18,7 @@ void Camera::init()
 	char **argv;
 	gst_init(argc, &argv);
 	
-	// build
+	// build pipeline
 	ostringstream ss;
 	ss << "nvarguscamerasrc wbmode=1 sensor_id=0 ! ";
 	ss << "nvvidconv flip-method=2 ! ";
@@ -34,8 +34,10 @@ void Camera::init()
 		return;
 	}
 	cout << ss.str() << endl;
+
+	// initialize memory
 	
-	// start
+	// start pipeline
 	GstPipeline* pipeline = GST_PIPELINE(this->launch);
 	if (!pipeline)
 	{

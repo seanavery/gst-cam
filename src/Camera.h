@@ -2,6 +2,7 @@
 #include <gst/app/gstappsink.h>
 #include <iostream>
 #include <string>
+#include "RingBuffer.cpp"
 
 class Camera {
 	public:
@@ -12,6 +13,7 @@ class Camera {
 		void init();
 		bool open();
 		bool capture();
+		RingBuffer memory;
 	private:
 		static void onEOS(_GstAppSink* sink, void* user_data);
 		static GstFlowReturn onPreroll(_GstAppSink* sink, void* user_data);
