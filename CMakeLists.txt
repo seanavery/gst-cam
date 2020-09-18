@@ -5,3 +5,5 @@ add_subdirectory(pybind11)
 add_executable( stream src/stream.cpp )
 target_link_libraries(stream gstreamer-1.0 gobject-2.0 glib-2.0 gstapp-1.0)
 pybind11_add_module(pycamera src/PyCamera.cpp)
+target_link_libraries(pycamera gstreamer-1.0 gobject-2.0 glib-2.0 gstapp-1.0)
+
