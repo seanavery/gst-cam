@@ -1,24 +1,36 @@
 # gst-cam
+> slim Camera Capture library that only uses Gstreamer and c++ std library
+> runs on on NVidia Jetson Devices with SonyIMX 219 hardware
 
-> separating out gstreamer camera ingest code from [`Jetson Utils`](https://github.com/dusty-nv/jetson-utils) into smaller build
-
+## What 
+This is a port of the gstreamer camera ingest code from [`Jetson Utils`](https://github.com/dusty-nv/jetson-utils). 
+The goal was to make a smaller library build that is more portable to my real time apps.
 
 ## Setup
 
+### Run in c++
 ```
 mdir build && cd build && cmake .. && make && ./stream
 ```
 
-## API
+### Run in python
+
+This library uses Pybind11 to expose the c++ class and bridge type conversions.
+The CMake build will also generat a `PyCamera.so` library file that exposes the python module.
 
 ```
-the api is starting out the same as dusty's gst camera, things will change as needed
+from PyCamera import Camera
+cam = Camera()
+cam.init()
+cam.start()
+while True:
+	frame = cam.capture()
 ```
 
 ## TODO
 
 - [x] setup gst pipeline and msg bus
-- [] either diy ringbuffer or boost to handle memory
-- [] create capture endpoint to retrieve frames
-- [] expose python bindings with pybind
+- [ ] either diy ringbuffer or boost to handle memory
+- [ ] create capture endpoint to retrieve frames
+- [ ] expose python bindings with pybind
 
