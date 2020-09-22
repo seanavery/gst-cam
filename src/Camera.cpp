@@ -154,6 +154,9 @@ void Camera::checkBuffer(_GstAppSink* msink)
 	int height = 0;
 	gst_structure_get_int(gstCapsStruct, "height", &height);
 	cout << "height: " << height << endl;
+
+	memory.alloc(1);
+	
 	gst_sample_unref(gstSample);
 	gst_buffer_unmap(gstBuff, &map);
 	return;
