@@ -3,7 +3,8 @@
 
 using namespace std;
 
-inline RingBuffer::RingBuffer() {
+inline RingBuffer::RingBuffer() 
+{
 	cout << "inside constructor" << endl;
 	mBuffers = NULL;
 	mBufferSize = 0;
@@ -13,11 +14,27 @@ inline RingBuffer::RingBuffer() {
 	mLatestWrite = 0;
 };
 
-RingBuffer::~RingBuffer() {
+RingBuffer::~RingBuffer() 
+{
 	cout << "inside destructor" << endl;
 };
 
-bool RingBuffer::alloc(uint32_t numBuffers) {
+bool RingBuffer::alloc(uint32_t numBuffers, size_t size) 
+{
 	cout << "allocating memory" << endl;
 	return true;
 };
+
+void RingBuffer::freeBuff() 
+{
+	cout << "hit free buff" << endl;
+	if (!mBuffers || mNumBuffers == 0) 
+	{
+		return;
+	}
+	for (uint32_t n=0; n < mNumBuffers; n++) 
+	{
+		mBuffers[n] = NULL;
+	}
+}
+		

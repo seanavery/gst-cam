@@ -2,7 +2,8 @@ class RingBuffer {
 	public:
 		RingBuffer();
 		~RingBuffer();
-		bool alloc(uint32_t numBuffers);
+		bool alloc(uint32_t numBuffers, size_t size);
+		void freeBuff();
 	
 	protected:
 		uint32_t mNumBuffers;

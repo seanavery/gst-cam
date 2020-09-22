@@ -22,7 +22,7 @@ void Camera::init()
 	ostringstream ss;
 	ss << "nvarguscamerasrc wbmode=1 sensor_id=0 ! ";
 	ss << "nvvidconv flip-method=2 ! ";
-	// ss << "videoconvert ! video/x-raw, format=(string)BGR ! ";
+	ss << "videoconvert ! video/x-raw, format=(string)BGR ! ";
 	ss << "appsink name=mysink";
 	GError* err = NULL;
 	cout << ss.str() << endl;
@@ -155,7 +155,7 @@ void Camera::checkBuffer(_GstAppSink* msink)
 	gst_structure_get_int(gstCapsStruct, "height", &height);
 	cout << "height: " << height << endl;
 
-	memory.alloc(1);
+	memory.alloc(1, maxsize);
 	
 	gst_sample_unref(gstSample);
 	gst_buffer_unmap(gstBuff, &map);
