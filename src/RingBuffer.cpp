@@ -21,7 +21,27 @@ RingBuffer::~RingBuffer()
 
 bool RingBuffer::alloc(uint32_t numBuffers, size_t size) 
 {
-	cout << "allocating memory" << endl;
+	freeBuff();
+	if (mBuffers != NULL && mNumBuffers != numBuffers)
+	{
+		free(mBuffers);
+		mBuffers = NULL;
+	}
+
+	if (mBuffers == NULL)
+	{
+		cout << "allocating for real" << endl;
+		size_t bufferListSize = numBuffers * sizeof(void*);
+		cout << "bufferListSize " << bufferListSize << endl;
+		mBuffers = (void**)malloc(bufferListSize);
+		memset(mBuffers, 0, bufferListSize);
+	}
+	for (uint32_t n=0; n < numBuffers; n++)
+	{
+		mBuffers[n] = malloc(size);
+	}
+	mNumBuffers = numBuffers;
+	mBufferSize = size;
 	return true;
 };
 
