@@ -17,6 +17,12 @@ inline RingBuffer::RingBuffer()
 RingBuffer::~RingBuffer() 
 {
 	cout << "inside destructor" << endl;
+	freeBuff();
+	if (mBuffers != NULL)
+	{
+		free(mBuffers);
+		mBuffers = NULL;
+	}
 };
 
 bool RingBuffer::alloc(uint32_t numBuffers, size_t size) 
@@ -47,7 +53,6 @@ bool RingBuffer::alloc(uint32_t numBuffers, size_t size)
 
 void RingBuffer::freeBuff() 
 {
-	cout << "hit free buff" << endl;
 	if (!mBuffers || mNumBuffers == 0) 
 	{
 		return;
