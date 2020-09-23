@@ -33,7 +33,6 @@ bool RingBuffer::alloc(uint32_t numBuffers, size_t size)
 		free(mBuffers);
 		mBuffers = NULL;
 	}
-
 	if (mBuffers == NULL)
 	{
 		cout << "allocating for real" << endl;
@@ -61,5 +60,20 @@ void RingBuffer::freeBuff()
 	{
 		mBuffers[n] = NULL;
 	}
-}
-		
+};
+
+void* RingBuffer::peek(string cmd)
+{
+	if (!mBuffers || mNumBuffers == 0)
+	{
+		return NULL;
+	}
+	int bufferIndex = -1;
+	return NULL;
+};
+
+void* RingBuffer::next(string cmd) 
+{
+	
+	return NULL;
+};
