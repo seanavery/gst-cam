@@ -5,14 +5,12 @@ class RingBuffer {
 		RingBuffer();
 		~RingBuffer();
 		bool alloc(uint32_t numBuffers, size_t size);
-		void freeBuff();
-		void* next(string command);
+		void flush();
 		void* peek(string command);
 	protected:
-		uint32_t mNumBuffers;
-		uint32_t mLatestRead;
-		uint32_t mLatestWrite;
+		// queue structure
 		void** mBuffers;
-		size_t mBufferSize;
-		bool mReadOnce;
+		uint32_t maxBuffers;
+		uint32_t mNumBuffers;
+		size_t mSize;
 };
