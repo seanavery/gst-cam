@@ -8,9 +8,18 @@ The goal was to make a smaller library build that is more portable to my real ti
 
 ## Setup
 
-### Run in c++
+### Build
 ```
-mkdir build && cd build && cmake .. && make && ./stream
+# installl pybind11
+git submodule init
+git sumodule upgrade
+mkdir build && cd build && cmake .. && make
+```
+
+### Run in c++
+You can demo the code with an executable generated called `stream`
+```
+./stream
 ```
 
 ### Run in python
@@ -32,5 +41,5 @@ while True:
 - [x] setup gst pipeline and msg bus
 - [ ] either diy ringbuffer or boost to handle memory
 - [ ] create capture endpoint to retrieve frames
-- [ ] expose python bindings with pybind
+- [x] expose python bindings with pybind
 
