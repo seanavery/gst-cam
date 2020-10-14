@@ -10,7 +10,7 @@ The goal was to make a smaller library build that is more portable to my real ti
 
 ### Run in c++
 ```
-mdir build && cd build && cmake .. && make && ./stream
+mkdir build && cd build && cmake .. && make && ./stream
 ```
 
 ### Run in python
