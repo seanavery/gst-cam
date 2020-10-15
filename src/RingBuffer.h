@@ -5,7 +5,7 @@ class RingBuffer {
 		RingBuffer();
 		~RingBuffer();
 		bool alloc(uint32_t numBuffers, size_t size);
-		void flush();
+		void pop();
 		void* peek(string command);
 	protected:
 		// queue structure

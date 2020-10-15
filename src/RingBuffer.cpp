@@ -13,12 +13,12 @@ inline RingBuffer::RingBuffer()
 
 RingBuffer::~RingBuffer() 
 {
+	// free all memory allocation
 	
 };
 
 bool RingBuffer::alloc(uint32_t numBuffers, size_t size) 
 {
-
 	if (mBuffers == NULL) 
 	{
 		const size_t bufferListSize = numBuffers * sizeof(void*);
@@ -28,9 +28,6 @@ bool RingBuffer::alloc(uint32_t numBuffers, size_t size)
 	return true;
 };
  
-
-void R
-
 void* RingBuffer::peek(string cmd)
 {
 	return NULL;
