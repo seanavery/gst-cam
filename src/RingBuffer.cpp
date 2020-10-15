@@ -13,20 +13,29 @@ inline RingBuffer::RingBuffer()
 
 RingBuffer::~RingBuffer() 
 {
-	flush();
+	
 };
 
 bool RingBuffer::alloc(uint32_t numBuffers, size_t size) 
 {
-	
+
+	if (mBuffers == NULL) 
+	{
+		const size_t bufferListSize = numBuffers * sizeof(void*);
+		mBuffers = (void**)malloc(bufferListSize);
+		memset(mBuffers, 0, bufferListSize);
+	}
 	return true;
 };
+ 
+
+void R
 
 void* RingBuffer::peek(string cmd)
 {
 	return NULL;
 };
 
-void RingBuffer::flush() {
-	
+void RingBuffer::pop() {
+	mBuffers[0] = NULL;
 };
