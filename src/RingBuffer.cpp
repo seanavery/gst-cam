@@ -14,16 +14,21 @@ inline RingBuffer::RingBuffer()
 RingBuffer::~RingBuffer() 
 {
 	// free all memory allocation
-	
 };
 
 bool RingBuffer::alloc(uint32_t numBuffers, size_t size) 
 {
 	if (mBuffers == NULL) 
 	{
+		cout << "creating mBuffers" << endl; 
 		const size_t bufferListSize = numBuffers * sizeof(void*);
+		cout << "bufferListSize" << bufferListSize << endl;
 		mBuffers = (void**)malloc(bufferListSize);
 		memset(mBuffers, 0, bufferListSize);
+	}
+	for (uint32_t n=0; n < numBuffers; n++)
+	{
+		mBuffers[n] = malloc(size);
 	}
 	return true;
 };

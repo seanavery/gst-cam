@@ -155,8 +155,11 @@ void Camera::checkBuffer(_GstAppSink* msink)
 	gst_structure_get_int(gstCapsStruct, "height", &height);
 	cout << "height: " << height << endl;
 
-	memory.alloc(1, maxsize);
-	
+	if (!memory.alloc(1, maxsize))
+	{
+		cout << "error allocating frame" << endl;
+		return;
+	}
 	gst_sample_unref(gstSample);
 	gst_buffer_unmap(gstBuff, &map);
 	return;
